@@ -1,0 +1,17 @@
+{
+  "name": "hacker-news-graphql",
+  "version": "1.0.0",
+  "description": "",
+  "main": ".eslintrc.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "James Friend <james@jsdf.co> (http://jsdf.co/)",
+  "license": "ISC",
+  "dependencies": {
+    "graphql": "^0.7.1",
+    "hacker-news-api-client": "^0.1.0",
+    "leveldown": "^1.5.0",
+    "levelup": "^1.3.2"
+  }
+}
