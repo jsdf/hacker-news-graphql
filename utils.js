@@ -13,6 +13,17 @@ function get(key) {
   });
 }
 
+function getWithType(type, key) {
+  return get(key)
+    .then(item => {
+      if (item.type !== type) {
+        return Promise.reject(`Expected type "${type}", got type "${item.type}" for key ${key}`);
+      } else {
+        return item;
+      }
+    });
+}
+
 function log(msg) {
   console.error(new Date(), msg);
 }
@@ -28,7 +39,8 @@ function panic(err) {
 
 module.exports = {
   TOP_STORIES_KEY,
-  get,
+  getWithType,
+  get: get,
   db,
   log,
   logError,
