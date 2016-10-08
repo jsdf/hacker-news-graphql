@@ -1,12 +1,12 @@
 var express = require('express');
-var graphqlHTTP = require('express-graphql');
-var schema = require('./schema');
+var hnGraphQLMiddleware = require('./hnGraphQLMiddleware');
 
 var app = express();
+app.use('/graphql', hnGraphQLMiddleware);
 
-app.use('/graphql', graphqlHTTP({
-  schema,
-  graphiql: true
-}));
-
-app.listen(4000);
+module.exports = (customPort) => {
+  var port = customPort || 4000;
+  app.listen(port, () => {
+    console.log(`listening on localhost:${port}`);
+  });
+};

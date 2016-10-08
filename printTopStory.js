@@ -1,12 +1,13 @@
 var utils = require('./utils');
-var get = utils.get;
+var constants = require('./constants');
+var store = require('./store');
 
-get(utils.TOP_STORIES_KEY)
-  .then(topStoryIds => get(topStoryIds[0]))
+store.get(constants.TOP_STORIES_KEY)
+  .then(topStoryIds => store.get(topStoryIds[0]))
   .then(firstStory =>
     Promise.all([
       Promise.resolve(firstStory),
-      firstStory.kids[0] ? get(firstStory.kids[0]) : null,
+      firstStory.kids[0] ? store.get(firstStory.kids[0]) : null,
     ])
   )
   .then(data => {
