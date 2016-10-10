@@ -2,12 +2,14 @@ var gql = require('graphql');
 
 var constants = require('./constants');
 
+var idType = gql.GraphQLString;
+
 var StoryType = new gql.GraphQLObjectType({
   name: 'Story',
   description: 'A story.',
   fields: () => ({
     id: {
-      type: new gql.GraphQLNonNull(gql.GraphQLString),
+      type: new gql.GraphQLNonNull(idType),
       description: 'The id of the story.',
     },
     title: {
@@ -22,6 +24,10 @@ var StoryType = new gql.GraphQLObjectType({
       type: gql.GraphQLInt,
       description: 'The score of the story.',
     },
+    position: {
+      type: gql.GraphQLInt,
+      description: 'The position of the story.',
+    },
     time: {
       type: gql.GraphQLInt,
       description: 'The time of the story.',
@@ -31,7 +37,7 @@ var StoryType = new gql.GraphQLObjectType({
       description: 'The number of descendants (comments) of the story.',
     },
     descendantIds: {
-      type: gql.GraphQLInt,
+      type: new gql.GraphQLList(new gql.GraphQLNonNull(idType)),
       description: 'The ids of descendants (comments) of the story.',
     },
     descendantItems: {
@@ -46,7 +52,7 @@ var StoryType = new gql.GraphQLObjectType({
       },
     },
     kids: {
-      type: gql.GraphQLInt,
+      type: new gql.GraphQLList(new gql.GraphQLNonNull(idType)),
       description: 'The ids of direct descendants (comments) of the story.',
     },
     url: {
@@ -61,7 +67,7 @@ var CommentType = new gql.GraphQLObjectType({
   description: 'A comment.',
   fields: () => ({
     id: {
-      type: new gql.GraphQLNonNull(gql.GraphQLString),
+      type: new gql.GraphQLNonNull(idType),
       description: 'The id of the comment.',
     },
     parent: {
@@ -107,7 +113,7 @@ var Schema = new gql.GraphQLSchema({
         args: {
           id: {
             description: 'id of the story',
-            type: new gql.GraphQLNonNull(gql.GraphQLInt),
+            type: new gql.GraphQLNonNull(idType),
           },
         },
         resolve: (root, args, context) => (
@@ -119,7 +125,7 @@ var Schema = new gql.GraphQLSchema({
         args: {
           id: {
             description: 'id of the comment',
-            type: new gql.GraphQLNonNull(gql.GraphQLString),
+            type: new gql.GraphQLNonNull(idType),
           },
         },
         resolve: (root, args, context) => (
@@ -137,7 +143,12 @@ var Schema = new gql.GraphQLSchema({
             )
             .then(items =>
               ({
-                stories: items.filter(item => item.type === 'story'),
+                stories: (
+                  items.filter(item => item.type === 'story')
+                    .map((item, index) => 
+                      Object.assign({position: index + 1}, item)
+                    )
+                ),
               })
             );
         },
